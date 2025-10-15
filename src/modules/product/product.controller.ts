@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { getAllProductsFromDB, getSingleProductFromDB, insertProductIntoDB, updateSingleProductInDB } from "./product.service";
+import { deleteSingleProductFromDB, getAllProductsFromDB, getSingleProductFromDB, insertProductIntoDB, updateSingleProductInDB } from "./product.service";
 import ZProduct from "./product.validation";
 
 export const createProduct = async (req: Request, res: Response) => {
@@ -47,4 +47,16 @@ export const updateSingleProduct = async (req: Request, res: Response) => {
   } catch (error: any) {
     throw new Error(error.message);
   }
-}
+};
+
+export const deleteSingleProduct = async (req: Request, res: Response) => {
+  try {
+    const { productId } = req.params;
+
+    const deletedProduct = await deleteSingleProductFromDB(productId);
+
+    res.status(200).json({ success: true, message: "Product deleted successfully!", data: deletedProduct });
+  } catch (error: any) {
+    throw new Error(error.message);
+  }
+};

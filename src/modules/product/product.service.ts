@@ -40,3 +40,13 @@ export const updateSingleProductInDB = async (productId: string, updateProduct: 
     throw new Error("Failed to update product information in DB.");
   }
 };
+
+export const deleteSingleProductFromDB = async (productId: string) => {
+  try {
+    await Product.deleteOne({ _id: productId });
+
+    return null;
+  } catch (_error: any) {
+    throw new Error("Failed to delete product from DB.");
+  }
+};
