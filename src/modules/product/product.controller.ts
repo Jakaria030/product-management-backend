@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { getAllProductsFromDB, getSingleProductFromDB, insertProductIntoDB } from "./product.service";
+import { getAllProductsFromDB, getSingleProductFromDB, insertProductIntoDB, updateSingleProductInDB } from "./product.service";
 import ZProduct from "./product.validation";
 
 export const createProduct = async (req: Request, res: Response) => {
@@ -35,3 +35,16 @@ export const getSingleProduct = async (req: Request, res: Response) => {
     throw new Error(error.message);
   }
 };
+
+export const updateSingleProduct = async (req: Request, res: Response) => {
+  try {
+    const { productId } = req.params;
+    const updateProduct = req.body;
+
+    const updatedProduct = await updateSingleProductInDB(productId, updateProduct);
+
+    res.status(200).json({ success: true, message: "Product updated successfully!", data: updatedProduct });
+  } catch (error: any) {
+    throw new Error(error.message);
+  }
+}

@@ -30,3 +30,13 @@ export const getSingleProductFromDB = async (productId: string) => {
     throw new Error("Failed to get single product from DB.");
   }
 };
+
+export const updateSingleProductInDB = async (productId: string, updateProduct: IProduct) => {
+  try {
+    const updatedProduct = await Product.findByIdAndUpdate(productId, updateProduct, { new: true, runValidators: true });
+
+    return updatedProduct;
+  } catch (_error: any) {
+    throw new Error("Failed to update product information in DB.");
+  }
+};
