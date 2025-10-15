@@ -30,6 +30,7 @@ const productSchema = new Schema<IProduct>(
     },
     variants: [
       {
+        _id: false,
         type: {
           type: String,
           required: [true, "Variant type is required."],
