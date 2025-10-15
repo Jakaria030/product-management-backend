@@ -10,3 +10,13 @@ export const insertProductIntoDB = async (newProduct: IProduct) => {
     throw new Error("Failed to insert product into DB.");
   }
 };
+
+export const getAllProductsFromDB = async () => {
+  try {
+    const getProducts = await Product.find().select("-createdAt -updatedAt");
+
+    return getProducts;
+  } catch (_error: any) {
+    throw new Error("Failed to get all products from DB.");
+  }
+};
