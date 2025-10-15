@@ -20,3 +20,13 @@ export const getAllProductsFromDB = async () => {
     throw new Error("Failed to get all products from DB.");
   }
 };
+
+export const getSingleProductFromDB = async (productId: string) => {
+  try {
+    const getProduct = await Product.findById(productId).select("-createdAt -updatedAt");
+
+    return getProduct;
+  } catch (_error: any) {
+    throw new Error("Failed to get single product from DB.");
+  }
+};
