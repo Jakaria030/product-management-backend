@@ -1,4 +1,5 @@
-import express, { Application, Request, Response } from "express";
+import express, { Application } from "express";
+import { notFoundRoute, welcomeMessage } from "./utils";
 
 const app: Application = express();
 app.use(express.json());
@@ -12,11 +13,9 @@ import productRoutes from "./modules/product/product.route";
 app.use("/api/products", productRoutes);
 
 
-// root api message
-app.get("/", (_req: Request, res: Response) => {
-  res.status(200).json({
-    message: "Welcome to Product Management Backend API"
-  });
-});
+// root route message
+app.get("/", welcomeMessage);
+// not found route
+app.use(notFoundRoute);
 
 export default app;
