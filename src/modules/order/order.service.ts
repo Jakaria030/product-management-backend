@@ -12,9 +12,10 @@ export const createOrderIntoDB = async (newOrder: IOrder) => {
   }
 };
 
-export const getAllOrdersFromDB = async () => {
+export const getAllOrdersFromDB = async (email?: string) => {
   try {
-    const getOrders = await Order.find().select("-createdAt -updatedAt");
+    const filter = email ? {email} : {};
+    const getOrders = await Order.find(filter).select("-createdAt -updatedAt");
 
     return getOrders;
   } catch (_error: any) {
