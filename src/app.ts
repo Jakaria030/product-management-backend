@@ -1,5 +1,5 @@
 import express, { Application } from "express";
-import { notFoundRoute, welcomeMessage } from "./utils";
+import { globalErrorHandler, notFoundRoute, welcomeMessage } from "./utils";
 
 const app: Application = express();
 app.use(express.json());
@@ -17,5 +17,7 @@ app.use("/api/products", productRoutes);
 app.get("/", welcomeMessage);
 // not found route
 app.use(notFoundRoute);
+// global error handler
+app.use(globalErrorHandler);
 
 export default app;
