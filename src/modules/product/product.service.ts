@@ -11,9 +11,10 @@ export const insertProductIntoDB = async (newProduct: IProduct) => {
   }
 };
 
-export const getAllProductsFromDB = async () => {
+export const getAllProductsFromDB = async (searchTerm?: string) => {
   try {
-    const getProducts = await Product.find().select("-createdAt -updatedAt");
+    const filter = searchTerm ? {name: {$regex: searchTerm, $options: "i"}} : {};
+    const getProducts = await Product.find(filter).select("-createdAt -updatedAt");
 
     return getProducts;
   } catch (_error: any) {

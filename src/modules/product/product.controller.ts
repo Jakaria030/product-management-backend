@@ -9,17 +9,23 @@ export const createProduct = async (req: Request, res: Response) => {
 
     const insertedProduct = await insertProductIntoDB(parsedNewProduct);
 
-    res.status(201).json({ success: true, message: "Product created successfully!", data: insertedProduct })
+    return res.status(201).json({ success: true, message: "Product created successfully!", data: insertedProduct })
   } catch (error: any) {
     throw new Error(error.message);
   }
 };
 
-export const getAllProducts = async (_req: Request, res: Response) => {
+export const getAllProducts = async (req: Request, res: Response) => {
   try {
-    const getProducts = await getAllProductsFromDB();
+    const { searchTerm } = req.query;
 
-    res.status(200).json({ success: true, message: "Products fetched successfully!", data: getProducts });
+    const getProducts = await getAllProductsFromDB(searchTerm as string | undefined);
+
+    if (!getProducts || getProducts.length === 0) {
+      return res.status(400).json({ success: false, message: "Products not found!" });
+    }
+
+    return res.status(200).json({ success: true, message: "Products fetched successfully!", data: getProducts });
   } catch (error: any) {
     throw new Error(error.message);
   }
@@ -30,7 +36,7 @@ export const getSingleProduct = async (req: Request, res: Response) => {
     const { productId } = req.params;
     const getProduct = await getSingleProductFromDB(productId);
 
-    res.status(200).json({ success: true, message: "Product fetched successfully!", data: getProduct });
+    return res.status(200).json({ success: true, message: "Product fetched successfully!", data: getProduct });
   } catch (error: any) {
     throw new Error(error.message);
   }
@@ -43,7 +49,7 @@ export const updateSingleProduct = async (req: Request, res: Response) => {
 
     const updatedProduct = await updateSingleProductInDB(productId, updateProduct);
 
-    res.status(200).json({ success: true, message: "Product updated successfully!", data: updatedProduct });
+    return res.status(200).json({ success: true, message: "Product updated successfully!", data: updatedProduct });
   } catch (error: any) {
     throw new Error(error.message);
   }
@@ -55,7 +61,7 @@ export const deleteSingleProduct = async (req: Request, res: Response) => {
 
     const deletedProduct = await deleteSingleProductFromDB(productId);
 
-    res.status(200).json({ success: true, message: "Product deleted successfully!", data: deletedProduct });
+    return res.status(200).json({ success: true, message: "Product deleted successfully!", data: deletedProduct });
   } catch (error: any) {
     throw new Error(error.message);
   }

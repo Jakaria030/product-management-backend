@@ -9,7 +9,7 @@ import productRoutes from "./modules/product/product.route";
 
 
 // Mount all routes under /api
-app.use("/api", productRoutes);
+app.use("/api/products", productRoutes);
 
 
 // root api message
