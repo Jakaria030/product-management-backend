@@ -11,3 +11,13 @@ export const createOrderIntoDB = async (newOrder: IOrder) => {
     throw new ApiError(500, "Failed to insert order into DB.")
   }
 };
+
+export const getAllOrdersFromDB = async () => {
+  try {
+    const getOrders = await Order.find().select("-createdAt -updatedAt");
+
+    return getOrders;
+  } catch (_error: any) {
+    throw new ApiError(500, "Failed to get all orders from DB.")
+  }
+};
