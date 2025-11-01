@@ -1,5 +1,11 @@
 import { NextFunction, Request, Response } from "express";
 
+export const asyncHandler = (fn: (req: Request, res: Response, next: NextFunction) => Promise<any>) => {
+  return (req: Request, res: Response, next: NextFunction) => {
+    Promise.resolve(fn(req, res, next)).catch((error: any) => next(error));
+  }
+};
+
 export class ApiError extends Error {
   public readonly status: number;
   public readonly success: false = false;
@@ -16,13 +22,13 @@ export class ApiResponse<T> {
   public readonly message: string;
   public readonly data?: T;
 
-  constructor(status: number, message: string, data?: T){
+  constructor(status: number, message: string, data?: T) {
     this.status = status;
     this.success = status < 400;
     this.message = message;
     this.data = data;
   }
-}
+};
 
 export const welcomeMessage = (_req: Request, res: Response) => {
   return res.status(200).json({
