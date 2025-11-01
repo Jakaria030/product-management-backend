@@ -10,6 +10,20 @@ export class ApiError extends Error {
   }
 };
 
+export class ApiResponse<T> {
+  public readonly status: number;
+  public readonly success: boolean;
+  public readonly message: string;
+  public readonly data?: T;
+
+  constructor(status: number, message: string, data?: T){
+    this.status = status;
+    this.success = status < 400;
+    this.message = message;
+    this.data = data;
+  }
+}
+
 export const welcomeMessage = (_req: Request, res: Response) => {
   return res.status(200).json({
     message: "Welcome to Product Management Backend API"
