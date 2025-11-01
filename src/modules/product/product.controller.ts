@@ -1,69 +1,49 @@
-import { NextFunction, Request, Response } from "express";
-import { ApiError } from "../../utils";
+import { Request, Response } from "express";
+import { ApiError, ApiResponse, asyncHandler } from "../../utils";
 import { deleteSingleProductFromDB, getAllProductsFromDB, getSingleProductFromDB, insertProductIntoDB, updateSingleProductInDB } from "./product.service";
 import ZProduct from "./product.validation";
 
-export const createProduct = async (req: Request, res: Response, next: NextFunction) => {
-  try {
-    const newProduct = req.body;
-    const parsedNewProduct = ZProduct.parse(newProduct);
+export const createProduct = asyncHandler(async (req: Request, res: Response) => {
+  const newProduct = req.body;
+  const parsedNewProduct = ZProduct.parse(newProduct);
 
-    const insertedProduct = await insertProductIntoDB(parsedNewProduct);
+  const insertedProduct = await insertProductIntoDB(parsedNewProduct);
 
-    return res.status(201).json({ success: true, message: "Product created successfully!", data: insertedProduct })
-  } catch (error: any) {
-    next(error);
+  return res.status(201).json(new ApiResponse(201, "Product created successfully!", insertedProduct));
+});
+
+export const getAllProducts = asyncHandler(async (req: Request, res: Response) => {
+  const { searchTerm } = req.query;
+
+  const getProducts = await getAllProductsFromDB(searchTerm as string | undefined);
+
+  if (!getProducts || getProducts.length === 0) {
+    throw new ApiError(404, "Products not found!");
   }
-};
 
-export const getAllProducts = async (req: Request, res: Response, next: NextFunction) => {
-  try {
-    const { searchTerm } = req.query;
+  return res.status(200).json(new ApiResponse(200, "Products fetched successfully!", getProducts));
+});
 
-    const getProducts = await getAllProductsFromDB(searchTerm as string | undefined);
+export const getSingleProduct = asyncHandler(async (req: Request, res: Response) => {
+  const { productId } = req.params;
+  const getProduct = await getSingleProductFromDB(productId);
 
-    if (!getProducts || getProducts.length === 0) {
-      throw new ApiError(404, "Products not found!");
-    }
+  return res.status(200).json(new ApiResponse(200, "Product fetched successfully!", getProduct));
+});
 
-    return res.status(200).json({ success: true, message: "Products fetched successfully!", data: getProducts });
-  } catch (error: any) {
-    next(error);
-  }
-};
+export const updateSingleProduct = asyncHandler(async (req: Request, res: Response) => {
+  const { productId } = req.params;
+  const updateProduct = req.body;
 
-export const getSingleProduct = async (req: Request, res: Response, next: NextFunction) => {
-  try {
-    const { productId } = req.params;
-    const getProduct = await getSingleProductFromDB(productId);
+  const updatedProduct = await updateSingleProductInDB(productId, updateProduct);
 
-    return res.status(200).json({ success: true, message: "Product fetched successfully!", data: getProduct });
-  } catch (error: any) {
-    next(error);
-  }
-};
+  return res.status(200).json(new ApiResponse(200, "Product updated successfully!", updatedProduct));
+});
 
-export const updateSingleProduct = async (req: Request, res: Response, next: NextFunction) => {
-  try {
-    const { productId } = req.params;
-    const updateProduct = req.body;
+export const deleteSingleProduct = asyncHandler(async (req: Request, res: Response) => {
+  const { productId } = req.params;
 
-    const updatedProduct = await updateSingleProductInDB(productId, updateProduct);
+  const deletedProduct = await deleteSingleProductFromDB(productId);
 
-    return res.status(200).json({ success: true, message: "Product updated successfully!", data: updatedProduct });
-  } catch (error: any) {
-    next(error);
-  }
-};
-
-export const deleteSingleProduct = async (req: Request, res: Response, next: NextFunction) => {
-  try {
-    const { productId } = req.params;
-
-    const deletedProduct = await deleteSingleProductFromDB(productId);
-
-    return res.status(200).json({ success: true, message: "Product deleted successfully!", data: deletedProduct });
-  } catch (error: any) {
-    next(error);
-  }
-};
+  return res.status(200).json(new ApiResponse(200, "Product deleted successfully!", deletedProduct));
+});
